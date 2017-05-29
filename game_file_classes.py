@@ -28,8 +28,8 @@ class GameEngine(object):
 class TownSquare(Room):
     def enter(self):
         global bakery_visit
-        print "You are in the center of a small town. \n Ahead, you see a bakery, a butcher, and a police station."
-        print "You decide to look around. \n Which do you enter?"
+        print "You are in the center of a small town.\n Ahead, you see a bakery, a butcher, and a police station."
+        print "You decide to look around.\n Which do you enter?"
         action = raw_input("> ")
 
         if action == "bakery":
@@ -234,11 +234,11 @@ class Decision(Room):
         action = raw_input("> ")
 
         if action == 'go in':
-            print "NOT YET"
+            print "You walk towards the police station door.\nWhat could go wrong?\n"
             return 'police_room'
 
         elif action == 'don\'t go in':
-            print "NOT YET"
+            print "Better to not go in while you've got those herbs.\nSmart.\n"
             return 'town_square'
 
         elif action == 'flip a coin':
