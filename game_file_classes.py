@@ -20,7 +20,6 @@ class GameEngine(object):
 
         while current_scene != last_scene:
             next_scene_name = current_scene.enter()
-            print next_scene_name
             current_scene = self.scene_map.next_scene(next_scene_name)
 
         current_scene.enter()
@@ -54,9 +53,27 @@ class TownSquare(Room):
                 print "For a sleepy little town, there sure is a large police station. \n You wonder how many officers are staffed."
                 print "Thinking about that makes you hungry. You always get hungry when you're nervous.\n"
                 return 'town_square'
-            else:
+            elif bakery_visit == True and nosy_counter == 0:
                 print "You look at the police station. Your...bag of herbs...weighs heavily in your pocket.\n"
                 return 'station_decision'
+            elif nosy_counter == 1:
+                print "The police station looms large in the distance, but you approach it with conviction!\n"
+                return 'police_room'
+            else:
+                print "A fourth scenario has occured."
+                return 'police_room'
+
+        else:
+            if bakery_visit == False:
+                print "Maybe you should consider the bakery."
+                return 'town_square'
+            elif bakery_visit == True and nosy_counter == 0:
+                print "You look at the bakery, but it doesn't seem likely that she'll want you to come back again so soon."
+                return 'town_square'
+            elif nosy_counter == 1:
+                print "Suddenly, this small town gives you a strange feeling."
+                print "Maybe you'll come back another time."
+                exit(0)
 
 class Bakery(Room):
     def enter(self):
@@ -224,9 +241,39 @@ class Garden(Room):
             nosy_counter += 1
             return 'bakery_room'
 
-class Butcher(Room):
+class ButcherFront(Room):
     def enter(self):
-        print "NO TEXT YET"
+        print "You nervously clear your throat."
+        print "'Um, the baker sent me? I have an item for you', you say."
+        return 'butcher_back'
+
+class ButcherBack(Room):
+    def enter(self):
+        print "Butcher: 'The baker? So you've seen the garden?'\n"
+        action = raw_input("> ")
+
+        if action in ['yea', 'yes', 'yep', 'yeah']:
+            print "The butcher laughs."
+            print "Butcher: 'Well, at least you admit it. Give me the thing, then.'\n"
+            print "You hand the box to the butcher."
+            print "Your mission accomplished, you leave the butcher's shop.\n"
+            print "You hurry home to try the herbs."
+            print "Amazing."
+            exit(0)
+
+        elif action in ['no', 'nah', 'naw', 'nope', 'nevermind']:
+            print "Butcher: 'So you must have stolen the box then!'"
+            print "Butcher: 'Nobody steals from the baker!'\n"
+            print "The butcher pulls her hatchet out of the wood block."
+            print "Butcher: 'I think it's time for you to get out. Give me the box and go.'\n"
+            print "Shaken, you hand the butcher the box and run out of the shop."
+            print "You're lucky to escape with your life.\n"
+            print "Maybe next time will go more smoothly."
+            exit(0)
+
+        else:
+            print "Butcher: 'Why don't we try that one again...'"
+            return 'butcher_back'
 
 class Decision(Room):
     def enter(self):
@@ -256,23 +303,108 @@ class Decision(Room):
 
 class PoliceStation(Room):
     def enter(self):
-        print "NO TEXT YET"
+        print "You walk through the doors of the police station."
+        print "Looking around, you see a reception desk toward the back of the reception area.\n"
+
+        if nosy_counter == 1:
+            print "You approach the reception desk."
+            print "'Excuse me', you say, 'is Officer Greene available?'"
+            print "The bored-looking secretary glances at you.\n"
+            print "Secretary: 'Just a moment. Please have a seat.'"
+            print "She gestures at the plastic chairs lining the north wall of the room.\n"
+            print "After a brief wait, an Officer comes out from the rear of the station.\n"
+            return 'officer_visit'
+
+        else:
+            print "There is a secretary at the reception desk. She looks up, and sees you by the door."
+            print "Secretary: 'Can I help you with something?'"
+            action = raw_input("> ")
+
+            if action in ['yes', 'yea', 'yeah']:
+                print "Secretary: 'What is it? Do you have a crime to report?'"
+                action = raw_input("> ")
+                if action in ['yea', 'yes', 'yeah']:
+                    print "Secretary: 'Officer Harrigan, can you come over here please? This person would like to report a crime.'"
+                    print "You give your statement to the officer, selling out the baker as a purveyor of unique herbs."
+                    print "What a buzz-kill.\n"
+                    print "You slink out of the town, people shaking their heads as you pass."
+                    print "For shame."
+                    exit(0)
+
+                elif action in ['no', 'nah', 'naw', 'nope', 'nevermind']:
+                    print "Secretary: 'Are you sure? You look a little shifty.'"
+                    print "She waves to an officer nearby."
+                    print "Secretary: 'Officer Harrigan, will you check this person out? Something is off with them.'\n"
+                    print "The officer searches you and finds your herbs.\nShe shakes her head sadly."
+                    print "Officer: 'I'm going to have to confiscate these herbs, they could be dangerous in the wrong hands!'\n"
+                    print "She shoos you out the door.\nYou walk dejectedly out of the police station."
+                    print "Better luck next time."
+                    exit(0)
+
+                else:
+                    print "Secretary: 'If you're going to waste time, do it somewhere else.'"
+                    print "The secretary points to the door.\nYou take the hint, and leave."
+                    print "You decide to quit while you're ahead, and head home with your herbs.\n"
+                    print "Awesome."
+                    exit(0)
+
+            elif action in ['no', 'nah', 'naw', 'nope', 'nevermind']:
+                print "Secretary: 'This is a police station, not a museum. Gawk somewhere else.'"
+                print "The secretary returns to her paperwork, dismissing you."
+                print "You've had enough of the law for one day.\nTime to head home!\n"
+                print "Righteous."
+                exit(0)
+
+            else:
+                print "Secretary: 'I can't stand a mumbler! Come back when you've learned to speak clearly.'"
+                print "The secretary glares at you."
+                print "Startled, you back out of the police station.\n"
+                print "At least you have your herbs to comfort you."
+                print "Tubular."
+                exit(0)
+
+class Officer(Room):
+    def enter(self):
+        print "Officer: 'Are you the idiot asking for Officer Greene?'"
+        print "You nod. She looks mad.\n"
+        print "Officer: 'Did the baker send you?'"
         action = raw_input("> ")
 
-        if action == "Officer Greene":
-            pass
+        if action in ['yes', 'yea', 'yeah']:
+            print "The officer rolls her eyes."
+            print "Officer: 'The baker is a valuable part of our economy.'"
+            print "Officer: 'Forget you ever met her, and forget your way back here.'\n"
+            print "The officer stalks off.\n"
+            print "Secretary: 'That means it's time for you to go, honey.'\n"
+            print "You get up, shaken, and leave the station."
+            print "You just wanted a brownie!"
+            exit(0)
 
-        elif nosy_counter == 1:
-            pass
+        elif action in ['no', 'nah', 'naw', 'nope', 'nevermind']:
+            print "Officer: 'I don't believe for a second that was just a lucky guess.'"
+            print "Officer: 'Whatever game you're playing, play it somewhere else.'\n"
+            print "The officer glares at you.\nYou stand up and leave the station.\n"
+            print "You can't help but feel you dodged a bullet."
+            print "What a strange town."
+            exit(0)
+
+        else:
+            print "Officer: 'Whatever. I don't think you're welcome in our town anymore.'"
+            print "Officer: 'Maybe it's time for you to leave.'\n"
+            print "You leave the police station, wondering what you just got yourself into."
+            print "Oh well, there's a Sbux on the way home."
+            exit(0)
 
 class Map(object):
     rooms = {
         'town_square' : TownSquare(),
         'bakery_room' : Bakery(),
         'garden' : Garden(),
-        'butcher_room' : Butcher(),
+        'butcher_room' : ButcherFront(),
         'police_room' : PoliceStation(),
-        'station_decision' : Decision()
+        'station_decision' : Decision(),
+        'officer_visit' : Officer(),
+        'butcher_back' : ButcherBack()
         }
 
     def __init__(self, start_scene):
@@ -280,7 +412,6 @@ class Map(object):
 
     def next_scene(self, scene_name):
         val = Map.rooms.get(scene_name)
-        print scene_name
         return val
 
     def opening_scene(self):
